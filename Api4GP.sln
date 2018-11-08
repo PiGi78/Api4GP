@@ -3,9 +3,32 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2036
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api4GP.Core", "Api4GP.Core\Api4GP.Core.csproj", "{CA91CED2-5D86-4B2F-99F3-30B52194EE15}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{1D49AE7C-A8F9-4DAD-A487-D3CD164C2631}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api4GP.Tests", "Api4GP.Tests\Api4GP.Tests.csproj", "{FEE64626-527E-40EE-A401-CA02AFFFF2A0}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CA91CED2-5D86-4B2F-99F3-30B52194EE15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA91CED2-5D86-4B2F-99F3-30B52194EE15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA91CED2-5D86-4B2F-99F3-30B52194EE15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA91CED2-5D86-4B2F-99F3-30B52194EE15}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FEE64626-527E-40EE-A401-CA02AFFFF2A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEE64626-527E-40EE-A401-CA02AFFFF2A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FEE64626-527E-40EE-A401-CA02AFFFF2A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FEE64626-527E-40EE-A401-CA02AFFFF2A0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{FEE64626-527E-40EE-A401-CA02AFFFF2A0} = {1D49AE7C-A8F9-4DAD-A487-D3CD164C2631}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1ABAC0EF-51C5-41A1-AFE2-E78D49C8B289}
