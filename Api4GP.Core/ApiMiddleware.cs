@@ -52,7 +52,7 @@ namespace Api4GP.Core
             if (ApiManager.IsManaged(request))
             {
                 // Execute the manager
-                var result = await ApiManager.DoWorkAsync(request);
+                var result = await ApiManager.ExecuteRequestAsync(request);
                 // If there is a result, it will back to the caller
                 if (result != null)
                 {

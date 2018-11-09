@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Api4GP.Core;
+using Api4GP.SqlServer;
 
 namespace Api4GP.Tests
 {
@@ -32,6 +33,7 @@ namespace Api4GP.Tests
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             app.UseApi4GP(new TestApiManager());
+            app.UseApi4GP(new SqlServerApiManager(Configuration.GetConnectionString("MyHDA")));
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

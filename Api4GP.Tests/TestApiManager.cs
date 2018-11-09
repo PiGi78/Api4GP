@@ -8,7 +8,7 @@ namespace Api4GP.Tests
 {
     public class TestApiManager : IApiManager
     {
-        public Task<ApiResponse> DoWorkAsync(ApiRequest request)
+        public Task<ApiResponse> ExecuteRequestAsync(ApiRequest request)
         {
             var response = new ApiResponse
             {

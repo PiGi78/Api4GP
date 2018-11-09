@@ -19,10 +19,10 @@ namespace Api4GP.Core
 
 
         /// <summary>
-        /// Does the work
+        /// Executes the request and give back a response
         /// </summary>
         /// <param name="request">Request to process</param>
         /// <returns>Response</returns>
-        Task<ApiResponse> DoWorkAsync(ApiRequest request);
+        Task<ApiResponse> ExecuteRequestAsync(ApiRequest request);
     }
 }
