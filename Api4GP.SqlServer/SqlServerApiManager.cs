@@ -62,8 +62,15 @@ namespace Api4GP.SqlServer
             // check for procedures
             var dbProcedures = await GetStoredProcedureAsync();
 
-            // check if procedure exist
-            var dbProc = dbProcedures.SingleOrDefault(x => x.ProcedureName == procedure);
+            // check if procedure exists (full name)
+            var dbProc = dbProcedures.SingleOrDefault(x => x.ProcedureName.Equals(procedure, StringComparison.InvariantCultureIgnoreCase));
+            // check if procedure exists (alias)
+            if (dbProc == null)
+            {
+                dbProc = dbProcedures.SingleOrDefault(x => x.ProcedureAlias.Equals(procedure, StringComparison.InvariantCultureIgnoreCase));
+            }
+
+            // if not, not found response
             if (dbProc == null)
             {
                 return new ApiResponse
@@ -86,7 +93,7 @@ namespace Api4GP.SqlServer
                 // Command for execute the procedure
                 using (var cmd = connection.CreateCommand())
                 {
-                    cmd.CommandText = fullProcedureName;
+                    cmd.CommandText = dbProc.ProcedureName;
                     cmd.CommandType = CommandType.StoredProcedure;
 
                     // Adds the parameter (if any)
@@ -111,13 +118,40 @@ namespace Api4GP.SqlServer
                     }
 
                     // Execute the procedure
-                    var responseContent = (await cmd.ExecuteScalarAsync()) as string;
+                    //var responseContent = (await cmd.ExecuteScalarAsync()) as string;
+                    int statusCode = 200;
+                    string content = null;
+                    try
+                    {
+                        using (var reader = await cmd.ExecuteReaderAsync(CommandBehavior.SequentialAccess))
+                        {
+                            if (await reader.ReadAsync())
+                            {
+                                statusCode = reader.GetInt32(0);
+                                if (!await reader.IsDBNullAsync(1))
+                                {
+                                    content = reader.GetString(1);
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        // On exception return 500
+                        return new ApiResponse
+                        {
+                            StatusCode = 500,
+                            Content = $"Error executing the '{fullProcedureName}' procedure.{Environment.NewLine}" +
+                                      $"It has to return two parameters: Status code (int) and JSON result (string or null).{Environment.NewLine}" +
+                                      $"Error message: {ex.Message}"
+                        };
+                    }
 
                     // Returns the response
                     return new ApiResponse
                     {
-                        StatusCode = 200,
-                        Content = responseContent
+                        StatusCode = statusCode,
+                        Content = content
                     };
 
                 }
@@ -187,7 +221,7 @@ namespace Api4GP.SqlServer
             return new ApiResponse
             {
                 StatusCode = 400,
-                Content = $"Procedure '{pInfo.ProcedureName}' must have a single NVARCHAR input parameter and an NVARCHAR result"
+                Content = $"Procedure '{pInfo.ProcedureName}' must have at max a single NVARCHAR input parameter"
             };
         }
 
@@ -201,6 +235,24 @@ namespace Api4GP.SqlServer
             /// Name of the procedure
             /// </summary>
             public string ProcedureName { get; set; }
+
+
+            private string _procedureAlias { get; set; }
+
+            /// <summary>
+            /// Procedure alias (without underscore)
+            /// </summary>
+            public string ProcedureAlias
+            {
+                get
+                {
+                    if (_procedureAlias == null)
+                    {
+                        _procedureAlias = ProcedureName.Replace("_", "");
+                    }
+                    return _procedureAlias;
+                }
+            }
 
             /// <summary>
             /// List of parameters
@@ -252,10 +304,11 @@ namespace Api4GP.SqlServer
 
                     _storedProcedures = new List<StoredProcedureInfo>();
 
-                    // Read all procedures
+                    // Iterate thru them
                     foreach (var procedureRow in proceduresTable.Rows)
                     {
                         var columns = ((DataRow)procedureRow).ItemArray;
+                        // Check for schema
                         if (columns[1].Equals(DbSchema))
                         {
                             var procedure = new StoredProcedureInfo
