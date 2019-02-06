@@ -35,7 +35,7 @@ namespace Api4GP.Tests
         {
             app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseApi4GP(new TestApiManager());
-            app.UseApi4GP(new SqlServerApiManager(Configuration.GetConnectionString("MyHDA")));
+            app.UseApi4GP(new SqlServerApiManager(Configuration.GetConnectionString("MyConnection")));
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
